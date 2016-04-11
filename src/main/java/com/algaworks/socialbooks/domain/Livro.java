@@ -7,9 +7,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -23,7 +31,7 @@ public class Livro {
 	private String editora;
 	private String resumo;
 	private List<Comentario> comentarios;
-	private String autor;
+	private Autor autor;
 	
 	public Livro() {}
 	
@@ -31,7 +39,6 @@ public class Livro {
 		this.nome = nome;
 	}
 	
-	@JsonInclude(Include.NON_NULL)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -41,6 +48,7 @@ public class Livro {
 		this.id = id;
 	}
 	
+	@NotEmpty(message = "O campo nome não pode ser vazio.")
 	public String getNome() {
 		return nome;
 	}
@@ -49,6 +57,8 @@ public class Livro {
 	}
 	
 	@JsonInclude(Include.NON_NULL)
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	@NotNull(message = "Campo publicação é de preenchimento obrigatório.")
 	public Date getPublicacao() {
 		return publicacao;
 	}
@@ -57,6 +67,7 @@ public class Livro {
 	}
 	
 	@JsonInclude(Include.NON_NULL)
+	@NotBlank(message = "Campo editora é de preenchimento obrigatório.")
 	public String getEditora() {
 		return editora;
 	}
@@ -65,6 +76,8 @@ public class Livro {
 	}
 	
 	@JsonInclude(Include.NON_NULL)
+	@NotBlank(message = "O resumo deve ser preenchido.")
+	@Size(max = 1500, message = "O resumo não pode conter mais de 1500 caracteres.")
 	public String getResumo() {
 		return resumo;
 	}
@@ -72,8 +85,8 @@ public class Livro {
 		this.resumo = resumo;
 	}
 	
-	@JsonInclude(Include.NON_NULL)
-	@Transient
+	@JsonInclude(Include.NON_EMPTY)
+	@OneToMany(mappedBy = "livro")
 	public List<Comentario> getComentarios() {
 		return comentarios;
 	}
@@ -81,11 +94,13 @@ public class Livro {
 		this.comentarios = comentarios;
 	}
 	
+	@ManyToOne
+	@JoinColumn(name = "autor_id")
 	@JsonInclude(Include.NON_NULL)
-	public String getAutor() {
+	public Autor getAutor() {
 		return autor;
 	}
-	public void setAutor(String autor) {
+	public void setAutor(Autor autor) {
 		this.autor = autor;
 	}
 	
