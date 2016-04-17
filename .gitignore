@@ -6,4 +6,10 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
+.mvn/
+.settings
+mvnw
+mvnw.cmd
+*.class
+.classpath
+.project
